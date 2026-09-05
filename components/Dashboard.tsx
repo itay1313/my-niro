@@ -23,6 +23,17 @@ const LOCAL_KEY = "my-niro-notes-v1";
 
 type SortKey = "km" | "price" | "year" | "value" | "posted";
 
+const PLACES = ["מקום ראשון", "מקום שני", "מקום שלישי"];
+const placeLabel = (rank: number) => PLACES[rank - 1] ?? `מקום ${rank}`;
+
+const SORT_LABELS: Record<SortKey, string> = {
+  value: "עלות משוערת ל-5 שנים",
+  km: "ק״מ",
+  price: "מחיר",
+  year: "שנתון",
+  posted: "תאריך פרסום",
+};
+
 interface Props {
   listings: Listing[];
   assumptions: Assumptions;
@@ -34,7 +45,6 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
   const [storage, setStorage] = useState<NotesStorage>("local");
   const [loaded, setLoaded] = useState(false);
 
-  const [powertrain, setPowertrain] = useState<"all" | "phev" | "ev">("all");
   const [seller, setSeller] = useState<"all" | "dealer" | "private">("all");
   const [year, setYear] = useState<"all" | "2022" | "2023" | "2024">("all");
   const [maxPrice, setMaxPrice] = useState(115000);
@@ -126,7 +136,6 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
   const visible = useMemo(() => {
     const rows = listings.filter((l) => {
       if (!showSold && l.status === "sold") return false;
-      if (powertrain !== "all" && l.powertrain !== powertrain) return false;
       if (seller !== "all" && l.sellerType !== seller) return false;
       if (year !== "all" && String(l.year) !== year) return false;
       if (l.km > maxKm) return false;
@@ -161,7 +170,6 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
   }, [
     listings,
     showSold,
-    powertrain,
     seller,
     year,
     maxKm,
@@ -187,7 +195,6 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
   ).length;
 
   function reset() {
-    setPowertrain("all");
     setSeller("all");
     setYear("all");
     setMaxPrice(115000);
@@ -201,7 +208,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
       <header className="mast">
         <div className="mast-top">
           <span className="eyebrow">
-            עודכן {updatedAt} · מקור: יד2 · שנתון 2022 ומעלה בלבד
+            עודכן {updatedAt} · מקור: יד2 · נירו פלוס פלאג-אין, 2022 ומעלה
           </span>
           <button
             className="theme-btn"
@@ -217,9 +224,9 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
         </div>
         <h1>תיק רכישה נירו</h1>
         <p className="lede">
-          כל מודעות קיה נירו ונירו פלוס הרלוונטיות, עם ק״מ מדויק, פרטי מוכר,
-          חישוב אחריות סוללה ועלות אנרגיה. אפשר לסנן, למיין, ולכתוב הערה על כל
-          רכב.
+          כל מודעות קיה נירו פלוס פלאג-אין בשוק, מדורגות ממקום ראשון ומטה לפי
+          העלות האמיתית לחמש שנים. חשמלי מלא לא נכנס לרשימה. אפשר לסנן, למיין,
+          ולכתוב הערה על כל רכב.
         </p>
       </header>
 
@@ -260,29 +267,6 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
       </div>
 
       <div className="filters">
-        <div className="field">
-          <label>הנעה</label>
-          <div className="chips">
-            {(
-              [
-                ["all", "הכל"],
-                ["phev", "פלאג-אין"],
-                ["ev", "חשמלי"],
-              ] as const
-            ).map(([v, t]) => (
-              <button
-                key={v}
-                type="button"
-                className="chip"
-                aria-pressed={powertrain === v}
-                onClick={() => setPowertrain(v)}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="field">
           <label>מוכר</label>
           <div className="chips">
@@ -377,11 +361,13 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
       </div>
 
       <p className="count">
-        {visible.length} תוצאות מתוך {listings.length}
+        {visible.length} תוצאות מתוך {listings.length} · מדורג לפי{" "}
+        {SORT_LABELS[sort]}
       </p>
 
       <div className="list">
-        {visible.map((l) => {
+        {visible.map((l, i) => {
+          const rank = i + 1;
           const price = effectivePrice(l);
           const runway = batteryRunway(l, assumptions);
           const energy = annualEnergyCost(l, assumptions);
@@ -396,6 +382,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
               key={l.id}
               className={[
                 "card",
+                rank <= 3 ? "podium p" + rank : "",
                 l.highlight === "top" ? "top" : "",
                 l.highlight === "caution" ? "caution" : "",
                 l.status === "sold" ? "sold" : "",
@@ -409,8 +396,9 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
                     <span className="name">
                       קיה {l.model} {l.trim}
                     </span>
-                    <span className="badge">
-                      {l.powertrain === "ev" ? "חשמלי" : "פלאג-אין"}
+                    <span className={"rank" + (rank <= 3 ? " r" + rank : "")}>
+                      <b>{rank}</b>
+                      {placeLabel(rank)}
                     </span>
                     {l.status === "sold" && (
                       <span className="badge no">נמכר</span>
@@ -555,9 +543,8 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
             {assumptions.electricityPerKwh} ₪ לקוט״ש.
           </li>
           <li>
-            אחריות סוללה: פלאג-אין עד{" "}
-            {formatKm(assumptions.phevBatteryCapKm)} ק״מ או 10 שנים; חשמלי עד{" "}
-            {formatKm(assumptions.evBatteryCapKm)} ק״מ או 7 שנים. הארכה{" "}
+            אחריות סוללה: {formatKm(assumptions.phevBatteryCapKm)} ק״מ או 10
+            שנים מהמסירה, לפי המוקדם. הארכה{" "}
             {assumptions.batteryExtensionPerYear} ₪ לשנה, סוללה חדשה כ-
             {formatKm(assumptions.batteryReplacementCost)} ₪.
           </li>

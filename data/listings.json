@@ -26,12 +26,20 @@
       "sellerType": "dealer",
       "sellerName": "סאן-קאר",
       "contact": "נטע",
-      "phones": ["053-5552175", "053-8096368"],
+      "phones": [
+        "053-5552175",
+        "053-8096368"
+      ],
       "area": "הרכב 42, ירושלים",
       "postedAt": "2026-04-30",
       "status": "active",
       "highlight": "top",
-      "flags": ["התחייבות בבדיקה", "אחריות מורחבת", "טסט עד 01/2027", "ירד מ-95,900"],
+      "flags": [
+        "התחייבות בבדיקה",
+        "אחריות מורחבת",
+        "טסט עד 01/2027",
+        "ירד מ-95,900"
+      ],
       "claudeNote": "עלייה לכביש 01/2023. יושב בשוק מאז אפריל, יש מרווח מו״מ. יעד סגירה 84–85 אלף."
     },
     {
@@ -46,12 +54,17 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אופרייט ליס",
-      "phones": ["055-4528841"],
+      "phones": [
+        "055-4528841"
+      ],
       "area": "בעלי מלאכה 4, חיפה",
       "postedAt": "2026-06-15",
       "status": "active",
       "highlight": "watch",
-      "flags": ["היסטוריית טיפולים מלאה", "טסט עד 02/2027"],
+      "flags": [
+        "היסטוריית טיפולים מלאה",
+        "טסט עד 02/2027"
+      ],
       "claudeNote": "הק״מ הנמוך ביותר בין הפלאג-אין אצל סוחרים, אבל 0.75 ₪ לכל ק״מ שנחסך מול סאן-קאר. שווה רק ב-90–91 אלף."
     },
     {
@@ -72,7 +85,10 @@
       "postedAt": "2026-08-11",
       "status": "active",
       "highlight": "caution",
-      "flags": ["הערות דופן שמאל", "חום מטאלי"],
+      "flags": [
+        "הערות דופן שמאל",
+        "חום מטאלי"
+      ],
       "claudeNote": "רוסלן הציע 82,000, כ-8% מתחת למחירון שלהם. להתקדם רק אם דוח התביעות מראה נזק חיצוני ולא קונסטרוקטיבי."
     },
     {
@@ -92,7 +108,9 @@
       "postedAt": "2026-07-04",
       "status": "active",
       "highlight": "watch",
-      "flags": ["מחיר לא צוין"],
+      "flags": [
+        "מחיר לא צוין"
+      ],
       "claudeNote": "הק״מ הנמוך ביותר בין הפלאג-אין משנתון 2022. שווה טלפון רק כדי לשמוע מחיר."
     },
     {
@@ -112,48 +130,10 @@
       "postedAt": "2026-08-01",
       "status": "active",
       "highlight": "watch",
-      "flags": ["גימור EX"],
+      "flags": [
+        "גימור EX"
+      ],
       "claudeNote": "45 אלף ק״מ ויד ראשונה בגימור הגבוה. יקר ב-11 אלף מסאן-קאר תמורת 54 אלף ק״מ פחות, כלומר 0.21 ₪ לק״מ. הוגן."
-    },
-    {
-      "id": "xxyhco6y",
-      "model": "נירו",
-      "trim": "LX Plus Plus",
-      "powertrain": "phev",
-      "year": 2022,
-      "km": 47000,
-      "hand": 1,
-      "price": 105000,
-      "sellerType": "dealer",
-      "sellerName": "A.A",
-      "contact": "",
-      "phones": [],
-      "area": "צפון השרון",
-      "postedAt": "2026-08-10",
-      "status": "active",
-      "highlight": "none",
-      "flags": [],
-      "claudeNote": ""
-    },
-    {
-      "id": "699906wj",
-      "model": "נירו",
-      "trim": "EX",
-      "powertrain": "phev",
-      "year": 2023,
-      "km": 56000,
-      "hand": 1,
-      "price": null,
-      "sellerType": "dealer",
-      "sellerName": "שחק קיה טרייד",
-      "contact": "",
-      "phones": [],
-      "area": "פתח תקווה",
-      "postedAt": "2026-08-20",
-      "status": "active",
-      "highlight": "watch",
-      "flags": ["מחיר לא צוין", "סוחר קיה"],
-      "claudeNote": "2023 עם 56 אלף ק״מ אצל סוחר קיה. שווה בירור מחיר."
     },
     {
       "id": "uv83xp34",
@@ -287,7 +267,9 @@
       "sellerType": "dealer",
       "sellerName": "באדג'ט מכירת רכב",
       "contact": "משרד",
-      "phones": ["055-4527001"],
+      "phones": [
+        "055-4527001"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-09-03",
       "status": "active",
@@ -312,7 +294,9 @@
       "postedAt": "2026-08-15",
       "status": "active",
       "highlight": "none",
-      "flags": ["גימור EX"],
+      "flags": [
+        "גימור EX"
+      ],
       "claudeNote": "אותה סוכנות של רוסלן. אם ממילא נוסעים לשם, שווה לבקש לראות גם את זה."
     },
     {
@@ -327,7 +311,9 @@
       "sellerType": "dealer",
       "sellerName": "באדג'ט מכירת רכב",
       "contact": "משרד",
-      "phones": ["055-4527001"],
+      "phones": [
+        "055-4527001"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-09-03",
       "status": "active",
@@ -347,7 +333,9 @@
       "sellerType": "dealer",
       "sellerName": "גלי ליסינג",
       "contact": "יותם חי",
-      "phones": ["053-4270967"],
+      "phones": [
+        "053-4270967"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-08-25",
       "status": "active",
@@ -367,7 +355,9 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אופרייט ליס",
-      "phones": ["055-4528841"],
+      "phones": [
+        "055-4528841"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-06-28",
       "status": "active",
@@ -407,12 +397,16 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אופרייט ליס",
-      "phones": ["055-4528841"],
+      "phones": [
+        "055-4528841"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-08-01",
       "status": "active",
       "highlight": "none",
-      "flags": ["גימור EX"],
+      "flags": [
+        "גימור EX"
+      ],
       "claudeNote": ""
     },
     {
@@ -427,7 +421,9 @@
       "sellerType": "dealer",
       "sellerName": "באדג'ט מכירת רכב",
       "contact": "משרד",
-      "phones": ["055-4527001"],
+      "phones": [
+        "055-4527001"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-09-03",
       "status": "active",
@@ -447,7 +443,9 @@
       "sellerType": "dealer",
       "sellerName": "באדג'ט מכירת רכב",
       "contact": "משרד",
-      "phones": ["055-4527001"],
+      "phones": [
+        "055-4527001"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-09-03",
       "status": "active",
@@ -467,7 +465,9 @@
       "sellerType": "dealer",
       "sellerName": "טל סחר ותיווך רכב",
       "contact": "אבי",
-      "phones": ["055-4354154"],
+      "phones": [
+        "055-4354154"
+      ],
       "area": "אשדוד, אשקלון והסביבה",
       "postedAt": "2026-09-02",
       "status": "active",
@@ -487,7 +487,9 @@
       "sellerType": "dealer",
       "sellerName": "באדג'ט מכירת רכב",
       "contact": "משרד",
-      "phones": ["055-4527001"],
+      "phones": [
+        "055-4527001"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-09-03",
       "status": "active",
@@ -507,7 +509,9 @@
       "sellerType": "dealer",
       "sellerName": "באדג'ט מכירת רכב",
       "contact": "משרד",
-      "phones": ["055-4527001"],
+      "phones": [
+        "055-4527001"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-09-03",
       "status": "active",
@@ -527,7 +531,9 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אופרייט ליס",
-      "phones": ["055-4528841"],
+      "phones": [
+        "055-4528841"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-04-01",
       "status": "active",
@@ -547,7 +553,9 @@
       "sellerType": "dealer",
       "sellerName": "גלי ליסינג",
       "contact": "יותם חי",
-      "phones": ["053-4270967"],
+      "phones": [
+        "053-4270967"
+      ],
       "area": "ראשון לציון והסביבה",
       "postedAt": "2026-07-19",
       "status": "active",
@@ -567,7 +575,10 @@
       "sellerType": "dealer",
       "sellerName": "סאן-קאר",
       "contact": "נטע",
-      "phones": ["053-8096368", "053-5552175"],
+      "phones": [
+        "053-8096368",
+        "053-5552175"
+      ],
       "area": "ירושלים",
       "postedAt": "2026-07-26",
       "status": "active",
@@ -587,7 +598,9 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אופרייט ליס",
-      "phones": ["055-4528841"],
+      "phones": [
+        "055-4528841"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-08-18",
       "status": "active",
@@ -607,12 +620,16 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אופרייט ליס",
-      "phones": ["055-4528841"],
+      "phones": [
+        "055-4528841"
+      ],
       "area": "כל הארץ",
       "postedAt": "2026-08-20",
       "status": "active",
       "highlight": "none",
-      "flags": ["גימור EX"],
+      "flags": [
+        "גימור EX"
+      ],
       "claudeNote": ""
     },
     {
@@ -652,227 +669,9 @@
       "postedAt": "2026-07-06",
       "status": "active",
       "highlight": "none",
-      "flags": ["גימור EX"],
-      "claudeNote": ""
-    },
-    {
-      "id": "lb5lp2j1",
-      "model": "נירו",
-      "trim": "EX",
-      "powertrain": "ev",
-      "year": 2023,
-      "km": 15000,
-      "hand": 1,
-      "price": 105000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "תל אביב יפו",
-      "postedAt": "2026-08-25",
-      "status": "active",
-      "highlight": "top",
-      "flags": ["סוללה 64 קוט״ש", "טווח אמיתי כ-390 ק״מ"],
-      "claudeNote": "הק״מ הנמוך ביותר בכל השוק. 2023 עם 15 אלף ק״מ בלבד, יד ראשונה, מוכר פרטי. אם הכיוון החשמלי מדבר אליך, זה הרכב."
-    },
-    {
-      "id": "qfpzq57l",
-      "model": "נירו פלוס",
-      "trim": "",
-      "powertrain": "ev",
-      "year": 2024,
-      "km": 18000,
-      "hand": 1,
-      "price": 98000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "אשדוד, אשקלון",
-      "postedAt": "2026-08-28",
-      "status": "active",
-      "highlight": "top",
-      "flags": ["סוללה 64 קוט״ש", "שנתון 2024"],
-      "claudeNote": "2024 עם 18 אלף ק״מ ב-98,000 ₪. הכי חדש והכי נמוך ק״מ שיש בטווח התקציב."
-    },
-    {
-      "id": "j99te11l",
-      "model": "נירו פלוס",
-      "trim": "",
-      "powertrain": "ev",
-      "year": 2024,
-      "km": 17000,
-      "hand": 2,
-      "price": 99900,
-      "sellerType": "dealer",
-      "sellerName": "אוטו אדיר",
-      "contact": "",
-      "phones": [],
-      "area": "ראשון לציון",
-      "postedAt": "2026-08-20",
-      "status": "active",
-      "highlight": "watch",
-      "flags": ["סוללה 64 קוט״ש"],
-      "claudeNote": ""
-    },
-    {
-      "id": "guxctl90",
-      "model": "נירו פלוס",
-      "trim": "",
-      "powertrain": "ev",
-      "year": 2024,
-      "km": 20000,
-      "hand": 2,
-      "price": 104000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "צפון השרון",
-      "postedAt": "2026-08-22",
-      "status": "active",
-      "highlight": "none",
-      "flags": [],
-      "claudeNote": ""
-    },
-    {
-      "id": "ebqciej6",
-      "model": "נירו פלוס",
-      "trim": "",
-      "powertrain": "ev",
-      "year": 2024,
-      "km": 24000,
-      "hand": 2,
-      "price": 110000,
-      "sellerType": "dealer",
-      "sellerName": "אוטו שי",
-      "contact": "",
-      "phones": [],
-      "area": "ראשון לציון",
-      "postedAt": "2026-08-18",
-      "status": "active",
-      "highlight": "none",
-      "flags": [],
-      "claudeNote": ""
-    },
-    {
-      "id": "vyjb6vxv",
-      "model": "נירו",
-      "trim": "EX",
-      "powertrain": "ev",
-      "year": 2023,
-      "km": 55000,
-      "hand": 1,
-      "price": 110000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "עפולה והעמקים",
-      "postedAt": "2026-08-14",
-      "status": "active",
-      "highlight": "none",
-      "flags": [],
-      "claudeNote": ""
-    },
-    {
-      "id": "h4dzt2fu",
-      "model": "נירו",
-      "trim": "EX",
-      "powertrain": "ev",
-      "year": 2023,
-      "km": 57000,
-      "hand": 1,
-      "price": 89000,
-      "sellerType": "dealer",
-      "sellerName": "אלהמי",
-      "contact": "",
-      "phones": [],
-      "area": "צפון השרון",
-      "postedAt": "2026-08-20",
-      "status": "active",
-      "highlight": "top",
-      "flags": ["סוללה 64 קוט״ש", "גימור EX"],
-      "claudeNote": "2023 EX חשמלי, יד ראשונה, 57 אלף ק״מ ב-89,000. אותו מחיר כמו הפלאג-אין של סאן-קאר עם 42 אלף ק״מ פחות ועלות אנרגיה של רבע."
-    },
-    {
-      "id": "3avwk8hk",
-      "model": "נירו",
-      "trim": "EX",
-      "powertrain": "ev",
-      "year": 2023,
-      "km": 59000,
-      "hand": 2,
-      "price": 95000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "צפון השרון",
-      "postedAt": "2026-08-16",
-      "status": "active",
-      "highlight": "watch",
-      "flags": ["סוללה 64 קוט״ש"],
-      "claudeNote": ""
-    },
-    {
-      "id": "lvh7z2l0",
-      "model": "נירו פלוס",
-      "trim": "",
-      "powertrain": "ev",
-      "year": 2023,
-      "km": 61500,
-      "hand": 2,
-      "price": 91000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "אזור אריאל וישובי יהודה",
-      "postedAt": "2026-07-20",
-      "status": "active",
-      "highlight": "watch",
-      "flags": ["סוללה 64 קוט״ש"],
-      "claudeNote": "מוכר פרטי, יושב מיולי. יש מקום למו״מ."
-    },
-    {
-      "id": "e8mggy0k",
-      "model": "נירו",
-      "trim": "EV Plus Plus",
-      "powertrain": "ev",
-      "year": 2022,
-      "km": 72000,
-      "hand": 2,
-      "price": 86500,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "ראשון לציון והסביבה",
-      "postedAt": "2026-08-05",
-      "status": "active",
-      "highlight": "watch",
-      "flags": ["סוללה 64 קוט״ש", "לבן"],
-      "claudeNote": "הזול ביותר בין החשמליות. 27 אלף ק״מ פחות מסאן-קאר ב-1,300 ₪ פחות."
-    },
-    {
-      "id": "nw8zed3g",
-      "model": "נירו",
-      "trim": "EV Plus Plus",
-      "powertrain": "ev",
-      "year": 2022,
-      "km": 96000,
-      "hand": 2,
-      "price": 92000,
-      "sellerType": "private",
-      "sellerName": "פרטי",
-      "contact": "",
-      "phones": [],
-      "area": "פתח תקווה והסביבה",
-      "postedAt": "2026-09-04",
-      "status": "active",
-      "highlight": "none",
-      "flags": [],
+      "flags": [
+        "גימור EX"
+      ],
       "claudeNote": ""
     },
     {
@@ -887,12 +686,16 @@
       "sellerType": "dealer",
       "sellerName": "אופרייט",
       "contact": "אלכס",
-      "phones": ["055-4355702"],
+      "phones": [
+        "055-4355702"
+      ],
       "area": "רמת השרון",
       "postedAt": "2026-08-20",
       "status": "sold",
       "highlight": "none",
-      "flags": ["נמכר"],
+      "flags": [
+        "נמכר"
+      ],
       "claudeNote": "היה הרכב היחיד בשנתונים 2022–2023 מתחת ל-95 אלף ₪ עם פחות מ-90 אלף ק״מ. נמכר."
     }
   ]
