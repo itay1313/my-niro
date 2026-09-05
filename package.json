@@ -1,0 +1,25 @@
+{
+  "name": "my-niro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "מעקב אחרי קיה נירו יד שנייה, שנתון 2022 ומעלה",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.4",
+    "pg": "^8.13.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}
