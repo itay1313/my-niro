@@ -1,5 +1,7 @@
 export type Powertrain = "phev" | "ev";
 export type SellerType = "dealer" | "private";
+/** בעלות קודמת. הסימן החזק ביותר שיש בלוח לגבי איך הרכב חי עד היום. */
+export type OwnerType = "private" | "company" | "lease" | "rental" | "other";
 export type Highlight = "top" | "watch" | "caution" | "none";
 export type ListingStatus = "active" | "sold";
 
@@ -13,6 +15,15 @@ export interface Listing {
   hand: number;
   price: number | null;
   negotiatedPrice?: number;
+  owner: OwnerType;
+  ownerText: string;
+  /** חודש עלייה לכביש, 1-12. null כשלא צוין במודעה. */
+  month: number | null;
+  /** טסט בתוקף עד, "YYYY-MM". ריק כשלא צוין. */
+  testUntil: string;
+  color: string;
+  /** המוכר מצהיר במודעה "ללא תאונות". הצהרה, לא בדיקה. */
+  claimsNoAccidents: boolean;
   sellerType: SellerType;
   sellerName: string;
   contact: string;

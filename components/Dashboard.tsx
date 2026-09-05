@@ -9,6 +9,7 @@ import type {
   UserNote,
 } from "@/lib/types";
 import {
+  OWNER_LABEL,
   annualEnergyCost,
   batteryRunway,
   daysOnMarket,
@@ -16,17 +17,21 @@ import {
   fiveYearCost,
   formatIls,
   formatKm,
+  matchScore,
+  meetsBar,
   yad2Url,
 } from "@/lib/calc";
 
 const LOCAL_KEY = "my-niro-notes-v1";
 
-type SortKey = "km" | "price" | "year" | "value" | "posted";
+type SortKey = "match" | "km" | "price" | "year" | "value" | "posted";
+type OwnerFilter = "all" | "clean" | "private";
 
 const PLACES = ["מקום ראשון", "מקום שני", "מקום שלישי"];
 const placeLabel = (rank: number) => PLACES[rank - 1] ?? `מקום ${rank}`;
 
 const SORT_LABELS: Record<SortKey, string> = {
+  match: "התאמה לקריטריונים",
   value: "עלות משוערת ל-5 שנים",
   km: "ק״מ",
   price: "מחיר",
@@ -46,11 +51,12 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
   const [loaded, setLoaded] = useState(false);
 
   const [seller, setSeller] = useState<"all" | "dealer" | "private">("all");
+  const [ownerF, setOwnerF] = useState<OwnerFilter>("all");
   const [year, setYear] = useState<"all" | "2022" | "2023" | "2024">("all");
-  const [maxPrice, setMaxPrice] = useState(115000);
-  const [maxKm, setMaxKm] = useState(135000);
+  const [maxPrice, setMaxPrice] = useState(150000);
+  const [maxKm, setMaxKm] = useState(80000);
   const [showSold, setShowSold] = useState(false);
-  const [sort, setSort] = useState<SortKey>("value");
+  const [sort, setSort] = useState<SortKey>("match");
   const [openNote, setOpenNote] = useState<string | null>(null);
   const [theme, setTheme] = useState<"system" | "light" | "dark">("system");
 
@@ -137,6 +143,9 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
     const rows = listings.filter((l) => {
       if (!showSold && l.status === "sold") return false;
       if (seller !== "all" && l.sellerType !== seller) return false;
+      if (ownerF === "private" && l.owner !== "private") return false;
+      if (ownerF === "clean" && (l.owner === "rental" || l.owner === "lease"))
+        return false;
       if (year !== "all" && String(l.year) !== year) return false;
       if (l.km > maxKm) return false;
       const p = effectivePrice(l);
@@ -148,6 +157,10 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
 
     rows.sort((a, b) => {
       switch (sort) {
+        case "match":
+          return (
+            matchScore(b).total - matchScore(a).total || a.km - b.km
+          );
         case "km":
           return a.km - b.km;
         case "price":
@@ -161,6 +174,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
             new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
           );
         case "value":
+          return cost(a) - cost(b);
         default:
           return cost(a) - cost(b);
       }
@@ -171,6 +185,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
     listings,
     showSold,
     seller,
+    ownerF,
     year,
     maxKm,
     maxPrice,
@@ -193,14 +208,16 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
   const noteCount = Object.values(notes).filter(
     (n) => n.note.trim() || n.status
   ).length;
+  const passing = active.filter(meetsBar).length;
 
   function reset() {
     setSeller("all");
+    setOwnerF("all");
     setYear("all");
-    setMaxPrice(115000);
-    setMaxKm(135000);
+    setMaxPrice(150000);
+    setMaxKm(80000);
     setShowSold(false);
-    setSort("value");
+    setSort("match");
   }
 
   return (
@@ -242,7 +259,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
       <div className="stats">
         <div className="stat">
           <span className="fig">{active.length}</span>
-          <span className="cap">מודעות פעילות במעקב</span>
+          <span className="cap">מודעות נירו פלוס פלאג-אין בשוק</span>
         </div>
         <div className="stat">
           <span className="fig hi">{formatIls(cheapest)}</span>
@@ -261,12 +278,39 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
           </span>
         </div>
         <div className="stat">
+          <span className="fig hi">{passing}</span>
+          <span className="cap">עומדים ברף: עד 80 אלף ק״מ, בלי צי</span>
+        </div>
+        <div className="stat">
           <span className="fig">{noteCount}</span>
           <span className="cap">רכבים שכתבת עליהם הערה</span>
         </div>
       </div>
 
       <div className="filters">
+        <div className="field">
+          <label>בעלות קודמת</label>
+          <div className="chips">
+            {(
+              [
+                ["all", "הכל"],
+                ["clean", "בלי ליסינג והשכרה"],
+                ["private", "פרטית בלבד"],
+              ] as const
+            ).map(([v, t]) => (
+              <button
+                key={v}
+                type="button"
+                className="chip"
+                aria-pressed={ownerF === v}
+                onClick={() => setOwnerF(v)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="field">
           <label>מוכר</label>
           <div className="chips">
@@ -307,8 +351,8 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
           <label>מחיר עד</label>
           <input
             type="range"
-            min={70000}
-            max={115000}
+            min={80000}
+            max={150000}
             step={1000}
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
@@ -320,8 +364,8 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
           <label>ק״מ עד</label>
           <input
             type="range"
-            min={15000}
-            max={135000}
+            min={10000}
+            max={140000}
             step={5000}
             value={maxKm}
             onChange={(e) => setMaxKm(Number(e.target.value))}
@@ -335,6 +379,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
           >
+            <option value="match">התאמה לקריטריונים</option>
             <option value="value">עלות משוערת ל-5 שנים</option>
             <option value="km">ק״מ, מהנמוך</option>
             <option value="price">מחיר, מהזול</option>
@@ -368,6 +413,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
       <div className="list">
         {visible.map((l, i) => {
           const rank = i + 1;
+          const score = matchScore(l);
           const price = effectivePrice(l);
           const runway = batteryRunway(l, assumptions);
           const energy = annualEnergyCost(l, assumptions);
@@ -405,9 +451,21 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
                     )}
                   </div>
                   <div className="specs">
-                    <span className="strong">{l.year}</span>
+                    <span className="strong">
+                      {l.month ? `${l.month}/${l.year}` : l.year}
+                    </span>
                     <span className="strong">{formatKm(l.km)} ק״מ</span>
                     <span>יד {l.hand}</span>
+                    <span
+                      className={
+                        "owner o-" +
+                        (l.owner === "rental" || l.owner === "lease"
+                          ? "fleet"
+                          : l.owner)
+                      }
+                    >
+                      {OWNER_LABEL[l.owner]}
+                    </span>
                     {days != null && <span>בלוח {days} ימים</span>}
                   </div>
                   <div className="seller">
@@ -435,8 +493,9 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
                 </div>
               </div>
 
-              {(l.flags.length > 0 || l.highlight === "top") && (
+              {(l.flags.length > 0 || meetsBar(l) || l.highlight === "top") && (
                 <div className="badges">
+                  {meetsBar(l) && <span className="badge go">עומד ברף</span>}
                   {l.highlight === "top" && (
                     <span className="badge go">מומלץ לבדוק</span>
                   )}
@@ -459,6 +518,10 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
               )}
 
               <div className="metrics">
+                <div className="metric">
+                  <span className="k">ציון התאמה</span>
+                  <span className="v score">{score.total}</span>
+                </div>
                 <div className="metric">
                   <span className="k">אחריות סוללה נותרה</span>
                   <span
@@ -486,7 +549,7 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
                 </div>
                 {five && (
                   <div className="metric">
-                    <span className="k">עלות משוערת ל-5 שנים</span>
+                    <span className="k">עלות ל-5 שנים</span>
                     <span className="v">{formatIls(five.total)}</span>
                   </div>
                 )}
@@ -547,6 +610,12 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
             שנים מהמסירה, לפי המוקדם. הארכה{" "}
             {assumptions.batteryExtensionPerYear} ₪ לשנה, סוללה חדשה כ-
             {formatKm(assumptions.batteryReplacementCost)} ₪.
+          </li>
+          <li>
+            ציון ההתאמה, 0 עד 100, מורכב מק״מ (40), בעלות קודמת (25), מחיר
+            (20), מספר יד (10) ושנתון (5). ליד2 אין שדה תאונות, ולכן הבעלות
+            הקודמת היא הסימן הטוב ביותר שיש: רכב ליסינג או השכרה עבר הרבה
+            נהגים. הצהרת ״ללא תאונות״ במודעה היא טקסט של המוכר, לא בדיקה.
           </li>
           <li>
             העלות ל-5 שנים היא הערכה גסה להשוואה בין שורות, לא תחזית. היא כוללת

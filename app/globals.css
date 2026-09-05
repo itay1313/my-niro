@@ -835,3 +835,35 @@ p {
     transition: none !important;
   }
 }
+
+/* ---------------- בעלות קודמת וציון התאמה ---------------- */
+
+.specs .owner {
+  font-weight: 500;
+  border-radius: var(--radius);
+  padding: 1px 9px;
+}
+
+.specs .owner.o-private {
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+}
+
+.specs .owner.o-company {
+  color: var(--ink-2);
+  background: var(--surface-2);
+}
+
+/* ליסינג והשכרה: הרבה נהגים, בלאי גבוה. מסומן, לא מוסתר. */
+.specs .owner.o-fleet {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.metric .v.score {
+  font-family: var(--serif);
+  font-size: var(--fs-4);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--accent-ink);
+}

@@ -1,4 +1,4 @@
-import type { Assumptions, Listing } from "./types";
+import type { Assumptions, Listing, OwnerType } from "./types";
 
 /** ק"מ שנותרו עד תקרת אחריות הסוללה, ומספר השנים שזה שווה בנסועה של המשתמש. */
 export function batteryRunway(listing: Listing, a: Assumptions) {
@@ -88,4 +88,63 @@ export function daysOnMarket(postedAt: string) {
 
 export function yad2Url(id: string) {
   return `https://www.yad2.co.il/vehicles/item/${id}`;
+}
+
+/* ---------------- ציון התאמה ---------------- */
+
+/**
+ * כמה הרכב עונה על מה שחיפשנו: שנתון 2022 ומעלה, ק״מ נמוך, ורכב שלא חי
+ * חיי צי. אין ביד2 שדה "תאונות", ולכן הפרוקסי הכי טוב שיש הוא הבעלות
+ * הקודמת ומספר היד. השכרה וליסינג עוברים נהגים רבים ובלאי גבוה,
+ * ורכב פרטי יד ראשונה הוא ההימור הבטוח יותר.
+ */
+const OWNER_SCORE: Record<OwnerType, number> = {
+  private: 1,
+  company: 0.6,
+  lease: 0.35,
+  rental: 0.1,
+  other: 0.5,
+};
+
+export const OWNER_LABEL: Record<OwnerType, string> = {
+  private: "בעלות פרטית",
+  company: "בעלות חברה",
+  lease: "ליסינג",
+  rental: "השכרה",
+  other: "בעלות לא ידועה",
+};
+
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+export function matchScore(listing: Listing) {
+  const price = effectivePrice(listing);
+
+  const km = clamp01(1 - listing.km / 100000);
+  const cost = price == null ? 0.5 : clamp01((125000 - price) / 40000);
+  const owner = OWNER_SCORE[listing.owner] ?? 0.5;
+  const hand = listing.hand <= 1 ? 1 : listing.hand === 2 ? 0.6 : 0.3;
+  const year = clamp01((listing.year - 2022) / 2);
+
+  const parts = {
+    km: km * 40,
+    owner: owner * 25,
+    price: cost * 20,
+    hand: hand * 10,
+    year: year * 5,
+  };
+
+  return {
+    ...parts,
+    total: Math.round(parts.km + parts.owner + parts.price + parts.hand + parts.year),
+  };
+}
+
+/** האם הרכב עומד ברף שהגדרנו: 2022 ומעלה, עד 80 אלף ק״מ, לא רכב צי. */
+export function meetsBar(listing: Listing) {
+  return (
+    listing.year >= 2022 &&
+    listing.km <= 80000 &&
+    listing.owner !== "rental" &&
+    listing.owner !== "lease"
+  );
 }
