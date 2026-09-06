@@ -867,3 +867,49 @@ p {
   line-height: 1.1;
   color: var(--accent-ink);
 }
+
+/* ---------------- הרכב שנבחר ---------------- */
+
+.pinned {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.pinned-head {
+  font-size: var(--fs-3);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* הכרטיס הנעוץ יושב מעל הדירוג ולא מושפע מהסינונים */
+.card.chosen {
+  border-color: var(--accent);
+  border-width: 2px;
+}
+
+.card.chosen::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -2px;
+  inset-block: -2px;
+  width: 6px;
+  background: var(--accent);
+  border-start-start-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+}
+
+.rank.chosen-tag {
+  font-size: var(--fs-1);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--surface);
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+
+:root[data-theme="dark"] .rank.chosen-tag,
+:root:not([data-theme="light"]) .rank.chosen-tag {
+  color: #10130c;
+}

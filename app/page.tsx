@@ -22,6 +22,7 @@ export default function Page() {
         listings={listings}
         assumptions={data.assumptions}
         updatedAt={data.updatedAt}
+        chosenId={data.chosenId}
       />
     </main>
   );

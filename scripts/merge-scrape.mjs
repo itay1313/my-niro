@@ -22,6 +22,13 @@ const MONTHS = [
   "07", "08", "09", "10", "11", "12",
 ];
 
+/**
+ * מודעות כונס נכסים והוצאה לפועל נכנסות ללוח עם מחיר פתיחה למכרז,
+ * לא עם מחיר מכירה. רכב 2022 על 95 אלף ק״מ שמופיע ב-5,000 ₪ מעוות
+ * את חציון המחירים ואת הדירוג, ולכן הן יורדות מהרשימה.
+ */
+const LIQUIDATOR = /כונס|כינוס|הוצאה לפועל|מכרז/;
+
 const src = process.argv[2];
 if (!src) {
   console.error("usage: node scripts/merge-scrape.mjs <scrape.json>");
@@ -45,7 +52,16 @@ function buildFlags(row, owner) {
   return flags;
 }
 
-const listings = scraped.map((row) => {
+const skipped = [];
+const listings = scraped
+  .filter((row) => {
+    if (LIQUIDATOR.test(row.agency || "")) {
+      skipped.push(row.id);
+      return false;
+    }
+    return true;
+  })
+  .map((row) => {
   const owner = OWNER_MAP[row.owner] ?? "other";
   const old = prev.get(row.id);
   const dealer = row.adType === "commercial";
@@ -79,7 +95,7 @@ const listings = scraped.map((row) => {
     flags: old?.flags?.length ? old.flags : buildFlags(row, owner),
     claudeNote: old?.claudeNote ?? "",
   };
-});
+  });
 
 // מודעות שהיו בקובץ ואינן בסריקה ירדו מהלוח. שומרים אותן מסומנות כנמכרו,
 // כדי שההערות שנכתבו עליהן לא ייעלמו.
@@ -95,5 +111,6 @@ dataset.source = "yad2.co.il · קיה נירו פלוס פלאג-אין, שנת
 await writeFile("data/listings.json", JSON.stringify(dataset, null, 2) + "\n");
 console.log(
   `${listings.length} מודעות · ${listings.filter((l) => l.status === "active").length} פעילות · ` +
-    `${listings.filter((l) => l.km <= 80000).length} עד 80 אלף ק״מ`
+    `${listings.filter((l) => l.km <= 80000).length} עד 80 אלף ק״מ` +
+    (skipped.length ? ` · ${skipped.length} מודעות כונס סוננו` : "")
 );

@@ -52,6 +52,8 @@ export interface Assumptions {
 export interface Dataset {
   updatedAt: string;
   source: string;
+  /** מזהה הרכב שנבחר. מוצג נעוץ בראש הדף, מחוץ לדירוג ומעל הסינונים. */
+  chosenId?: string;
   assumptions: Assumptions;
   listings: Listing[];
 }

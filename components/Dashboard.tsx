@@ -43,9 +43,15 @@ interface Props {
   listings: Listing[];
   assumptions: Assumptions;
   updatedAt: string;
+  chosenId?: string;
 }
 
-export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
+export default function Dashboard({
+  listings,
+  assumptions,
+  updatedAt,
+  chosenId,
+}: Props) {
   const [notes, setNotes] = useState<NotesMap>({});
   const [storage, setStorage] = useState<NotesStorage>("local");
   const [loaded, setLoaded] = useState(false);
@@ -209,6 +215,8 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
     (n) => n.note.trim() || n.status
   ).length;
   const passing = active.filter(meetsBar).length;
+  // הרכב שנבחר מוצג תמיד, גם כשהסינונים היו מסתירים אותו.
+  const chosen = chosenId ? listings.find((l) => l.id === chosenId) : undefined;
 
   function reset() {
     setSeller("all");
@@ -254,6 +262,23 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
           <code>POSTGRES_URL</code>. ההערות הקיימות יעברו אוטומטית בפעם הבאה
           שתשמור.
         </div>
+      )}
+
+      {chosen && (
+        <section className="pinned">
+          <h2 className="pinned-head">הרכב שנבחר</h2>
+          <ListingCard
+            listing={chosen}
+            rank={null}
+            assumptions={assumptions}
+            note={notes[chosen.id]}
+            isOpen={openNote === chosen.id}
+            onToggle={() =>
+              setOpenNote(openNote === chosen.id ? null : chosen.id)
+            }
+            onSave={saveNote}
+          />
+        </section>
       )}
 
       <div className="stats">
@@ -411,186 +436,20 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
       </p>
 
       <div className="list">
-        {visible.map((l, i) => {
-          const rank = i + 1;
-          const score = matchScore(l);
-          const price = effectivePrice(l);
-          const runway = batteryRunway(l, assumptions);
-          const energy = annualEnergyCost(l, assumptions);
-          const five = fiveYearCost(l, assumptions);
-          const days = daysOnMarket(l.postedAt);
-          const note = notes[l.id];
-          const hasNote = Boolean(note?.note.trim() || note?.status);
-          const isOpen = openNote === l.id;
-
-          return (
-            <article
+        {visible
+          .filter((l) => l.id !== chosenId)
+          .map((l, i) => (
+            <ListingCard
               key={l.id}
-              className={[
-                "card",
-                rank <= 3 ? "podium p" + rank : "",
-                l.highlight === "top" ? "top" : "",
-                l.highlight === "caution" ? "caution" : "",
-                l.status === "sold" ? "sold" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            >
-              <div className="card-head">
-                <div>
-                  <div className="title-row">
-                    <span className="name">
-                      קיה {l.model} {l.trim}
-                    </span>
-                    <span className={"rank" + (rank <= 3 ? " r" + rank : "")}>
-                      <b>{rank}</b>
-                      {placeLabel(rank)}
-                    </span>
-                    {l.status === "sold" && (
-                      <span className="badge no">נמכר</span>
-                    )}
-                  </div>
-                  <div className="specs">
-                    <span className="strong">
-                      {l.month ? `${l.month}/${l.year}` : l.year}
-                    </span>
-                    <span className="strong">{formatKm(l.km)} ק״מ</span>
-                    <span>יד {l.hand}</span>
-                    <span
-                      className={
-                        "owner o-" +
-                        (l.owner === "rental" || l.owner === "lease"
-                          ? "fleet"
-                          : l.owner)
-                      }
-                    >
-                      {OWNER_LABEL[l.owner]}
-                    </span>
-                    {days != null && <span>בלוח {days} ימים</span>}
-                  </div>
-                  <div className="seller">
-                    <span>
-                      {l.sellerType === "private" ? "מוכר פרטי" : l.sellerName}
-                      {l.contact ? ` · ${l.contact}` : ""}
-                    </span>
-                    {l.area && <span>{l.area}</span>}
-                    {l.phones.map((p) => (
-                      <a key={p} href={`tel:${p.replace(/-/g, "")}`}>
-                        {p}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="price-col">
-                  {l.negotiatedPrice != null && l.price != null && (
-                    <span className="price was">{formatIls(l.price)}</span>
-                  )}
-                  <span className="price">{formatIls(price)}</span>
-                  {l.negotiatedPrice != null && (
-                    <span className="price deal">מחיר שסוכם</span>
-                  )}
-                </div>
-              </div>
-
-              {(l.flags.length > 0 || meetsBar(l) || l.highlight === "top") && (
-                <div className="badges">
-                  {meetsBar(l) && <span className="badge go">עומד ברף</span>}
-                  {l.highlight === "top" && (
-                    <span className="badge go">מומלץ לבדוק</span>
-                  )}
-                  {l.highlight === "caution" && (
-                    <span className="badge warn">דורש בירור</span>
-                  )}
-                  {l.flags.map((f) => (
-                    <span key={f} className="badge">
-                      {f}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {l.claudeNote && (
-                <div className="claude-note">
-                  <span className="who">ניתוח</span>
-                  {l.claudeNote}
-                </div>
-              )}
-
-              <div className="metrics">
-                <div className="metric">
-                  <span className="k">ציון התאמה</span>
-                  <span className="v score">{score.total}</span>
-                </div>
-                <div className="metric">
-                  <span className="k">אחריות סוללה נותרה</span>
-                  <span
-                    className={
-                      "v " +
-                      (runway.years < 3.5
-                        ? "bad"
-                        : runway.years < 4.5
-                          ? "warn"
-                          : "")
-                    }
-                  >
-                    {runway.years.toFixed(1)} שנים
-                  </span>
-                </div>
-                <div className="metric">
-                  <span className="k">ק״מ עד התקרה</span>
-                  <span className="v">{formatKm(runway.kmLeft)}</span>
-                </div>
-                <div className="metric">
-                  <span className="k">אנרגיה לשנה</span>
-                  <span className="v">
-                    {Math.round(energy).toLocaleString("he-IL")} ₪
-                  </span>
-                </div>
-                {five && (
-                  <div className="metric">
-                    <span className="k">עלות ל-5 שנים</span>
-                    <span className="v">{formatIls(five.total)}</span>
-                  </div>
-                )}
-                {five && (
-                  <div className="metric">
-                    <span className="k">ק״מ בעוד 5 שנים</span>
-                    <span className="v">{formatKm(five.kmAtExit)}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="card-foot">
-                <a
-                  className="linkout"
-                  href={yad2Url(l.id)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  פתיחת המודעה ביד2 ↗
-                </a>
-                {note?.status && <span className="badge go">{note.status}</span>}
-                <button
-                  type="button"
-                  className={"note-toggle" + (hasNote ? " filled" : "")}
-                  onClick={() => setOpenNote(isOpen ? null : l.id)}
-                >
-                  {hasNote ? "ההערה שלי" : "הוספת הערה"}
-                </button>
-              </div>
-
-              {isOpen && (
-                <NoteEditor
-                  listingId={l.id}
-                  initial={note}
-                  onSave={saveNote}
-                  onClose={() => setOpenNote(null)}
-                />
-              )}
-            </article>
-          );
-        })}
+              listing={l}
+              rank={i + 1}
+              assumptions={assumptions}
+              note={notes[l.id]}
+              isOpen={openNote === l.id}
+              onToggle={() => setOpenNote(openNote === l.id ? null : l.id)}
+              onSave={saveNote}
+            />
+          ))}
       </div>
 
       {visible.length === 0 && (
@@ -628,6 +487,207 @@ export default function Dashboard({ listings, assumptions, updatedAt }: Props) {
         </ul>
       </footer>
     </>
+  );
+}
+
+/* ---------------- כרטיס מודעה ---------------- */
+
+function ListingCard({
+  listing: l,
+  rank,
+  assumptions,
+  note,
+  isOpen,
+  onToggle,
+  onSave,
+}: {
+  listing: Listing;
+  /** מקום בדירוג. null = הרכב שנבחר, שמוצג מחוץ לרשימה. */
+  rank: number | null;
+  assumptions: Assumptions;
+  note?: UserNote;
+  isOpen: boolean;
+  onToggle: () => void;
+  onSave: (id: string, note: string, status: string) => Promise<void>;
+}) {
+  const score = matchScore(l);
+  const price = effectivePrice(l);
+  const runway = batteryRunway(l, assumptions);
+  const energy = annualEnergyCost(l, assumptions);
+  const five = fiveYearCost(l, assumptions);
+  const days = daysOnMarket(l.postedAt);
+  const hasNote = Boolean(note?.note.trim() || note?.status);
+
+  return (
+        <article
+                    className={[
+            "card",
+            rank != null && rank <= 3 ? "podium p" + rank : "",
+          rank == null ? "chosen" : "",
+            l.highlight === "top" ? "top" : "",
+            l.highlight === "caution" ? "caution" : "",
+            l.status === "sold" ? "sold" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <div className="card-head">
+            <div>
+              <div className="title-row">
+                <span className="name">
+                  קיה {l.model} {l.trim}
+                </span>
+                {rank == null ? (
+                  <span className="rank chosen-tag">הרכב שנבחר</span>
+                ) : (
+                  <span className={"rank" + (rank <= 3 ? " r" + rank : "")}>
+                    <b>{rank}</b>
+                    {placeLabel(rank)}
+                  </span>
+                )}
+                {l.status === "sold" && (
+                  <span className="badge no">נמכר</span>
+                )}
+              </div>
+              <div className="specs">
+                <span className="strong">
+                  {l.month ? `${l.month}/${l.year}` : l.year}
+                </span>
+                <span className="strong">{formatKm(l.km)} ק״מ</span>
+                <span>יד {l.hand}</span>
+                <span
+                  className={
+                    "owner o-" +
+                    (l.owner === "rental" || l.owner === "lease"
+                      ? "fleet"
+                      : l.owner)
+                  }
+                >
+                  {OWNER_LABEL[l.owner]}
+                </span>
+                {days != null && <span>בלוח {days} ימים</span>}
+              </div>
+              <div className="seller">
+                <span>
+                  {l.sellerType === "private" ? "מוכר פרטי" : l.sellerName}
+                  {l.contact ? ` · ${l.contact}` : ""}
+                </span>
+                {l.area && <span>{l.area}</span>}
+                {l.phones.map((p) => (
+                  <a key={p} href={`tel:${p.replace(/-/g, "")}`}>
+                    {p}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="price-col">
+              {l.negotiatedPrice != null && l.price != null && (
+                <span className="price was">{formatIls(l.price)}</span>
+              )}
+              <span className="price">{formatIls(price)}</span>
+              {l.negotiatedPrice != null && (
+                <span className="price deal">מחיר שסוכם</span>
+              )}
+            </div>
+          </div>
+
+          {(l.flags.length > 0 || meetsBar(l) || l.highlight === "top") && (
+            <div className="badges">
+              {meetsBar(l) && <span className="badge go">עומד ברף</span>}
+              {l.highlight === "top" && (
+                <span className="badge go">מומלץ לבדוק</span>
+              )}
+              {l.highlight === "caution" && (
+                <span className="badge warn">דורש בירור</span>
+              )}
+              {l.flags.map((f) => (
+                <span key={f} className="badge">
+                  {f}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {l.claudeNote && (
+            <div className="claude-note">
+              <span className="who">ניתוח</span>
+              {l.claudeNote}
+            </div>
+          )}
+
+          <div className="metrics">
+            <div className="metric">
+              <span className="k">ציון התאמה</span>
+              <span className="v score">{score.total}</span>
+            </div>
+            <div className="metric">
+              <span className="k">אחריות סוללה נותרה</span>
+              <span
+                className={
+                  "v " +
+                  (runway.years < 3.5
+                    ? "bad"
+                    : runway.years < 4.5
+                      ? "warn"
+                      : "")
+                }
+              >
+                {runway.years.toFixed(1)} שנים
+              </span>
+            </div>
+            <div className="metric">
+              <span className="k">ק״מ עד התקרה</span>
+              <span className="v">{formatKm(runway.kmLeft)}</span>
+            </div>
+            <div className="metric">
+              <span className="k">אנרגיה לשנה</span>
+              <span className="v">
+                {Math.round(energy).toLocaleString("he-IL")} ₪
+              </span>
+            </div>
+            {five && (
+              <div className="metric">
+                <span className="k">עלות ל-5 שנים</span>
+                <span className="v">{formatIls(five.total)}</span>
+              </div>
+            )}
+            {five && (
+              <div className="metric">
+                <span className="k">ק״מ בעוד 5 שנים</span>
+                <span className="v">{formatKm(five.kmAtExit)}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="card-foot">
+            <a
+              className="linkout"
+              href={yad2Url(l.id)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              פתיחת המודעה ביד2 ↗
+            </a>
+            {note?.status && <span className="badge go">{note.status}</span>}
+            <button
+              type="button"
+              className={"note-toggle" + (hasNote ? " filled" : "")}
+              onClick={onToggle}
+            >
+              {hasNote ? "ההערה שלי" : "הוספת הערה"}
+            </button>
+          </div>
+
+          {isOpen && (
+            <NoteEditor
+              listingId={l.id}
+              initial={note}
+              onSave={onSave}
+              onClose={onToggle}
+            />
+          )}
+        </article>
   );
 }
 
