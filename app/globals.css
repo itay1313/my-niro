@@ -882,6 +882,18 @@ p {
   letter-spacing: -0.01em;
 }
 
+.pinned-top {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.pinned-when {
+  font-size: var(--fs-1);
+  color: var(--ink-3);
+}
+
 /* הכרטיס הנעוץ יושב מעל הדירוג ולא מושפע מהסינונים */
 .card.chosen {
   border-color: var(--accent);
@@ -912,4 +924,47 @@ p {
 :root[data-theme="dark"] .rank.chosen-tag,
 :root:not([data-theme="light"]) .rank.chosen-tag {
   color: #10130c;
+}
+
+/* סרטון סקירה של הדגם, מתחת לכרטיס הנעוץ */
+.video {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-cap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  font-size: var(--fs-1);
+  color: var(--ink-3);
+}
+
+.video-title {
+  font-family: var(--serif);
+  font-size: var(--fs-2);
+  color: var(--ink);
+}
+
+.video-cap a {
+  color: var(--accent-ink);
 }
