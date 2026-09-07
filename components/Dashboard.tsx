@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type {
   Assumptions,
+  ChosenVideo,
   Listing,
   NotesMap,
   NotesStorage,
@@ -44,6 +45,8 @@ interface Props {
   assumptions: Assumptions;
   updatedAt: string;
   chosenId?: string;
+  purchasedAt?: string;
+  chosenVideo?: ChosenVideo;
 }
 
 export default function Dashboard({
@@ -51,6 +54,8 @@ export default function Dashboard({
   assumptions,
   updatedAt,
   chosenId,
+  purchasedAt,
+  chosenVideo,
 }: Props) {
   const [notes, setNotes] = useState<NotesMap>({});
   const [storage, setStorage] = useState<NotesStorage>("local");
@@ -266,10 +271,20 @@ export default function Dashboard({
 
       {chosen && (
         <section className="pinned">
-          <h2 className="pinned-head">הרכב שנבחר</h2>
+          <div className="pinned-top">
+            <h2 className="pinned-head">
+              {purchasedAt ? "נרכשה" : "הרכב שנבחר"}
+            </h2>
+            {purchasedAt && (
+              <span className="pinned-when">
+                {formatDate(purchasedAt)} · החיפוש הסתיים
+              </span>
+            )}
+          </div>
           <ListingCard
             listing={chosen}
             rank={null}
+            purchased={Boolean(purchasedAt)}
             assumptions={assumptions}
             note={notes[chosen.id]}
             isOpen={openNote === chosen.id}
@@ -278,6 +293,7 @@ export default function Dashboard({
             }
             onSave={saveNote}
           />
+          {chosenVideo && <VideoEmbed video={chosenVideo} />}
         </section>
       )}
 
@@ -497,6 +513,7 @@ function ListingCard({
   rank,
   assumptions,
   note,
+  purchased = false,
   isOpen,
   onToggle,
   onSave,
@@ -504,6 +521,8 @@ function ListingCard({
   listing: Listing;
   /** מקום בדירוג. null = הרכב שנבחר, שמוצג מחוץ לרשימה. */
   rank: number | null;
+  /** הרכב הנעוץ כבר נרכש. מסתיר את סימון ״נמכר״ ומחליף את התגית. */
+  purchased?: boolean;
   assumptions: Assumptions;
   note?: UserNote;
   isOpen: boolean;
@@ -524,9 +543,10 @@ function ListingCard({
             "card",
             rank != null && rank <= 3 ? "podium p" + rank : "",
           rank == null ? "chosen" : "",
+            purchased ? "purchased" : "",
             l.highlight === "top" ? "top" : "",
             l.highlight === "caution" ? "caution" : "",
-            l.status === "sold" ? "sold" : "",
+            l.status === "sold" && !purchased ? "sold" : "",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -538,14 +558,16 @@ function ListingCard({
                   קיה {l.model} {l.trim}
                 </span>
                 {rank == null ? (
-                  <span className="rank chosen-tag">הרכב שנבחר</span>
+                  <span className="rank chosen-tag">
+                    {purchased ? "נרכשה" : "הרכב שנבחר"}
+                  </span>
                 ) : (
                   <span className={"rank" + (rank <= 3 ? " r" + rank : "")}>
                     <b>{rank}</b>
                     {placeLabel(rank)}
                   </span>
                 )}
-                {l.status === "sold" && (
+                {l.status === "sold" && !purchased && (
                   <span className="badge no">נמכר</span>
                 )}
               </div>
@@ -688,6 +710,49 @@ function ListingCard({
             />
           )}
         </article>
+  );
+}
+
+/** "2026-09-07" → "7.9.2026" */
+function formatDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d}.${m}.${y}`;
+}
+
+/* ---------------- סרטון של הדגם ---------------- */
+
+function VideoEmbed({ video }: { video: ChosenVideo }) {
+  const [y, m] = video.publishedAt.split("-");
+  return (
+    <figure className="video">
+      <div className="video-frame">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}`}
+          title={video.title}
+          loading="lazy"
+          allow="accelerometer; encrypted-media; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      </div>
+      <figcaption className="video-cap">
+        <span className="video-title">{video.title}</span>
+        <span className="video-meta">
+          {video.channel} · {m}/{y} · {video.minutes} דקות
+          {video.articleUrl && (
+            <>
+              {" · "}
+              <a
+                href={video.articleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                המבחן הכתוב ↗
+              </a>
+            </>
+          )}
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 

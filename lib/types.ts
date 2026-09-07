@@ -49,11 +49,28 @@ export interface Assumptions {
   batteryExtensionPerYear: number;
 }
 
+export interface ChosenVideo {
+  /** מזהה YouTube (החלק אחרי v=). */
+  youtubeId: string;
+  title: string;
+  channel: string;
+  /** חודש הפרסום, "YYYY-MM". */
+  publishedAt: string;
+  /** אורך בדקות, מעוגל. */
+  minutes: number;
+  /** הכתבה המלאה, אם יש. */
+  articleUrl?: string;
+}
+
 export interface Dataset {
   updatedAt: string;
   source: string;
   /** מזהה הרכב שנבחר. מוצג נעוץ בראש הדף, מחוץ לדירוג ומעל הסינונים. */
   chosenId?: string;
+  /** תאריך הרכישה בפועל, "YYYY-MM-DD". כשקיים, הרכב שנבחר מוצג כנרכש. */
+  purchasedAt?: string;
+  /** סרטון סקירה של הדגם המדויק, מוצג מתחת לרכב שנבחר. */
+  chosenVideo?: ChosenVideo;
   assumptions: Assumptions;
   listings: Listing[];
 }

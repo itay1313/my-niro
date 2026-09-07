@@ -23,6 +23,8 @@ export default function Page() {
         assumptions={data.assumptions}
         updatedAt={data.updatedAt}
         chosenId={data.chosenId}
+        purchasedAt={data.purchasedAt}
+        chosenVideo={data.chosenVideo}
       />
     </main>
   );
